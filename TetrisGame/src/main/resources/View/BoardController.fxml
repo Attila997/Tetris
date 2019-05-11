@@ -9,6 +9,7 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
 <Pane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea"
       fx:controller="com.attila.main.UIController">
     <GridPane fx:id="shapePanel" styleClass="shapePanel" vgap="1" hgap="1"/>
@@ -19,7 +20,8 @@
     </BorderPane>
     <VBox styleClass="controllPanel" alignment="BOTTOM_LEFT" prefHeight="400"
             layoutY="350" layoutX="20">
-        <Button onAction="#newGame" prefHeight="50" prefWidth="120" text="New Game" />
+        <TextField fx:id="Username" promptText="Username" />
+        <Button fx:id="newGameButton" onAction="#newGame" prefHeight="50" prefWidth="120" text="New Game" />
         <Button prefHeight="50" prefWidth="120" text="Controls" />
         <Button prefHeight="50" prefWidth="120" text="Scoreboard" />
         <Button fx:id="exitButton" onAction="#onExitButton" prefHeight="50" prefWidth="120" text="Exit" />

@@ -4,12 +4,15 @@ import com.attila.logic.EventHandler.*;
 import com.attila.logic.ShapeData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -24,6 +27,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UIController implements Initializable {
+
+    @FXML
+    private TextField Username;
+
+    @FXML
+    private Button newGameButton;
 
     @FXML
     private GridPane shapePanel;
@@ -54,9 +63,9 @@ public class UIController implements Initializable {
         stage.close();
     }
 
-
     @FXML
-    private void newGame(ActionEvent event){
+    private void newGame(ActionEvent event) {
+        Username.clear();
         timeline.stop();
         inputEvents.createNewGame();
         gamePanel.requestFocus();
@@ -73,6 +82,9 @@ public class UIController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        BooleanBinding isTextFieldEmpty = Bindings.isEmpty(Username.textProperty());
+        newGameButton.disableProperty().bind(isTextFieldEmpty);
+
         gamePanel.setFocusTraversable(true);
         //Requests that this Node get the input focus
         gamePanel.requestFocus();
