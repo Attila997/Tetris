@@ -1,0 +1,9 @@
+.gameBoard{
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+}
+
+.nextShape{
+    -fx-border-color: Blue;
+    -fx-border-width: 5px;
+}
