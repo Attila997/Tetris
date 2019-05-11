@@ -4,6 +4,7 @@ import com.attila.logic.EventHandler.*;
 import com.attila.logic.ShapeData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -34,6 +36,9 @@ public class UIController implements Initializable {
 
     @FXML
     private GridPane nextShapePane;
+
+    @FXML
+    private Text scoreValue;
 
     private InputEvents inputEvents;
     private Timeline timeline;
@@ -125,11 +130,11 @@ public class UIController implements Initializable {
         }
 
         shapePanel.setLayoutX(gamePanel.getLayoutX() + shapeData.getXpos() * shapePanel.getVgap() + shapeData.getXpos() * 20);
-        shapePanel.setLayoutY(-60 + gamePanel.getLayoutY() + shapeData.getYpos() * shapePanel.getHgap() + shapeData.getYpos() * 20);
+        shapePanel.setLayoutY(-65 + gamePanel.getLayoutY() + shapeData.getYpos() * shapePanel.getHgap() + shapeData.getYpos() * 20);
 
         generateNextShape(shapeData.getNextShapeData());
 
-        timeline = new Timeline(new KeyFrame(Duration.millis(600), m -> onMoveDown(new MoveEvent(EventSource.THREAD, EventType.DOWN))));
+        timeline = new Timeline(new KeyFrame(Duration.millis(400), m -> onMoveDown(new MoveEvent(EventSource.THREAD, EventType.DOWN))));
         timeline.setCycleCount(Timeline.INDEFINITE);
         //timeline.play();
     }
@@ -224,6 +229,9 @@ public class UIController implements Initializable {
         timeline.stop();
     }
 
+    public void bindScore(IntegerProperty integerProperty){
+        scoreValue.textProperty().bind(integerProperty.asString());
+    }
 
     public void setInputEvents(InputEvents events) {
         this.inputEvents = events;

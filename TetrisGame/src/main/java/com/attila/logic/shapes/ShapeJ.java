@@ -30,8 +30,8 @@ public class ShapeJ implements Shape{
         listOfShapes.add(new int[][]{
                 {0, 0, 0,0},
                 {0, 1, 1,0},
-                {0, 1, 0,0},
-                {0, 1, 0,0}
+                {0, 0, 1,0},
+                {0, 0, 1,0}
         });
     }
 

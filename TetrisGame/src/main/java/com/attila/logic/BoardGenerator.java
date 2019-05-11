@@ -16,6 +16,7 @@ public class BoardGenerator implements Board{
     private int[][] gameBoard;
     private Point offset;
     private Rotator rotator;
+    private final Score score;
 
     public BoardGenerator(int boardHeight, int boardWidth) {
         this.boardWidth = boardWidth;
@@ -23,6 +24,7 @@ public class BoardGenerator implements Board{
         gameBoard = new int[boardHeight][boardWidth];
         shapeGenerator = new ShapeGenerator();
         rotator = new Rotator();
+        score = new Score();
     }
 
     @Override
@@ -119,6 +121,6 @@ public class BoardGenerator implements Board{
 
     @Override
     public Score getScore() {
-        return null;
+        return score;
     }
 }

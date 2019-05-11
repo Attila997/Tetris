@@ -105,7 +105,7 @@ public class MatrixMath {
                 break;
             }
         }
-        int score = 0;
+        int score = 50 * clearedRows.size() * clearedRows.size();
         return new LineClear(clearedRows.size(),currentBoard,score);
     }
 

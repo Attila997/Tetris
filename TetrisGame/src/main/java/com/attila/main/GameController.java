@@ -20,7 +20,7 @@ public class GameController implements InputEvents {
         board.createNewShape();
         uiController.setInputEvents(this);
         uiController.initGameView(board.getGameBoard(), board.getShapeData());
-
+        uiController.bindScore(board.getScore().getPropertyOfScore());
     }
 
     @Override
@@ -54,13 +54,16 @@ public class GameController implements InputEvents {
         if (!allowToMove){
             board.pushShapeToBackgroud();
             lineClear = board.lineClear();
+            if (lineClear.getLinesRemoved() > 0){
+                board.getScore().add(lineClear.getScoreBonus());
+            }
             if (board.createNewShape()) {
                 uiController.gameOver();
             }
             uiController.refresGameRectangel(board.getGameBoard());
         } else {
             if (event.getEventSource() == EventSource.USER){
-                board.getScore();
+                board.getScore().add(1);
             }
         }
 

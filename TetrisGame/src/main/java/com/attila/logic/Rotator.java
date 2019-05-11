@@ -23,7 +23,8 @@ public class Rotator {
 
     public RotatedShapeData getRotatedShape(){
         int rotatedShapeIndex = shapeIndex;
-        rotatedShapeIndex++;
+        //elosztja az adott indexet a forma lehetséges állásának listájával
+        rotatedShapeIndex = (++rotatedShapeIndex) % shape.getShape().size();
         return new RotatedShapeData(shape.getShape().get(rotatedShapeIndex), rotatedShapeIndex);
     }
 }
