@@ -1,6 +1,7 @@
 package com.attila.main;
 
 import com.attila.logic.EventHandler.*;
+import com.attila.logic.Score;
 import com.attila.logic.ShapeData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -8,13 +9,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -22,7 +21,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -50,12 +53,17 @@ public class UIController implements Initializable {
     private Text scoreValue;
 
     private InputEvents inputEvents;
+
     private Timeline timeline;
+
     /**
      * A tábla téglalapja
      */
     private Rectangle[][] displayRectangle;
     private Rectangle[][] shapeRectangle;
+    private User user;
+    public UIController() throws IOException {
+    }
 
     @FXML
     private void onExitButton(){
@@ -88,25 +96,22 @@ public class UIController implements Initializable {
         gamePanel.setFocusTraversable(true);
         //Requests that this Node get the input focus
         gamePanel.requestFocus();
-        gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode() == KeyCode.LEFT){
-                    refreshShape(inputEvents.leftEvent(new MoveEvent(EventSource.USER,EventType.LEFT)));
-                    keyEvent.consume();
-                }
-                if (keyEvent.getCode() == KeyCode.RIGHT){
-                    refreshShape(inputEvents.rightEvent(new MoveEvent(EventSource.USER,EventType.RIGHT)));
-                    keyEvent.consume();
-                }
-                if (keyEvent.getCode() == KeyCode.DOWN){
-                    onMoveDown(new MoveEvent(EventSource.USER,EventType.DOWN));
-                    keyEvent.consume();
-                }
-                if (keyEvent.getCode() == KeyCode.UP){
-                    refreshShape(inputEvents.rotationEvent(new MoveEvent(EventSource.USER,EventType.ROTATE)));
-                    keyEvent.consume();
-                }
+        gamePanel.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.LEFT){
+                refreshShape(inputEvents.leftEvent(new MoveEvent(EventSource.USER,EventType.LEFT)));
+                keyEvent.consume();
+            }
+            if (keyEvent.getCode() == KeyCode.RIGHT){
+                refreshShape(inputEvents.rightEvent(new MoveEvent(EventSource.USER,EventType.RIGHT)));
+                keyEvent.consume();
+            }
+            if (keyEvent.getCode() == KeyCode.DOWN){
+                onMoveDown(new MoveEvent(EventSource.USER,EventType.DOWN));
+                keyEvent.consume();
+            }
+            if (keyEvent.getCode() == KeyCode.UP){
+                refreshShape(inputEvents.rotationEvent(new MoveEvent(EventSource.USER,EventType.ROTATE)));
+                keyEvent.consume();
             }
         });
     }
@@ -237,8 +242,37 @@ public class UIController implements Initializable {
         }
     }
 
-    public void gameOver(){
+
+    public void gameOver(Score score){
         timeline.stop();
+        try {
+            saveUser(score);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void saveUser(Score score) throws IOException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("Username: ",Username.getText());
+        jsonObject.put("Score: ", score.getPropertyOfScore().getValue());
+
+        try {
+            File file = new File("users.json");
+            FileWriter writer = new FileWriter(file);
+            writer.write(jsonObject.toJSONString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        /*
+        Writer writer = new FileWriter("Users.json");
+        Gson gson = new Gson();
+        user = new User(getUsername(), score.getPropertyOfScore().getValue());
+        System.out.println(user.getName() + user.getScore());
+        gson.toJson(user,writer);
+        */
     }
 
     public void bindScore(IntegerProperty integerProperty){
@@ -247,5 +281,13 @@ public class UIController implements Initializable {
 
     public void setInputEvents(InputEvents events) {
         this.inputEvents = events;
+    }
+
+    public String getUsername() {
+        return Username.getText();
+    }
+
+    public void setUsername(TextField username) {
+        Username = username;
     }
 }

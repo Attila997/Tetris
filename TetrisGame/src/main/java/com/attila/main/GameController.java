@@ -15,6 +15,7 @@ public class GameController implements InputEvents {
 
     private Board board = new BoardGenerator(24,10);
 
+
     public GameController(UIController controller) {
         uiController = controller;
         board.createNewShape();
@@ -58,7 +59,7 @@ public class GameController implements InputEvents {
                 board.getScore().add(lineClear.getScoreBonus());
             }
             if (board.createNewShape()) {
-                uiController.gameOver();
+                uiController.gameOver(board.getScore());
             }
             uiController.refresGameRectangel(board.getGameBoard());
         } else {
@@ -69,5 +70,4 @@ public class GameController implements InputEvents {
 
         return new DownData(board.getShapeData(), lineClear);
     }
-
 }
