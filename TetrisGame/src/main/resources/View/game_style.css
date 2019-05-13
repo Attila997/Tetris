@@ -7,3 +7,18 @@
     -fx-border-color: Blue;
     -fx-border-width: 5px;
 }
+
+.gameover{
+    -fx-font-size: 40pt;
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+}
+
+.buttonPanel {
+    -fx-spacing: 15;
+}
+
+.controls{
+    -fx-font-size: 13pt;
+    -fx-font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif ;
+}

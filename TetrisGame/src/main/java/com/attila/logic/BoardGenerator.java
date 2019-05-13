@@ -33,6 +33,12 @@ public class BoardGenerator implements Board{
         createNewShape();
     }
 
+    /**
+     * Új formát hoz létre.
+     * @return a visszaadott értéket a {@code GameController.downEvent} használni,
+     * ha {@code createNewShape} igaz értéket ad vissza akkor a forma lemozgása megáll,
+     * hamis esetén minden folytatódik
+     */
     @Override
     public boolean createNewShape() {
         Shape shape = shapeGenerator.getShape();

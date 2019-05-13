@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import java.net.URL?>
-<?import javafx.scene.layout.BorderPane?>
-
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.control.TextField?>
-<Pane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.172-ea"
-      fx:controller="com.attila.main.UIController">
-    <GridPane fx:id="shapePanel" styleClass="shapePanel" vgap="1" hgap="1"/>
-    <BorderPane styleClass="gameBoard" fx:id="gameBoard">
+
+<Pane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.attila.main.UIController">
+    <GridPane fx:id="shapePanel" hgap="1" vgap="1" />
+    <BorderPane fx:id="gameBoard" styleClass="gameBoard">
         <center>
-            <GridPane fx:id="gamePanel" hgap="1" vgap="1" layoutX="470" layoutY="60" />
+            <GridPane fx:id="gamePanel" hgap="1" vgap="1" />
         </center>
     </BorderPane>
-    <VBox styleClass="controllPanel" alignment="BOTTOM_LEFT" prefHeight="400"
-            layoutY="350" layoutX="20">
-        <TextField fx:id="Username" promptText="Username" />
+    <VBox alignment="BOTTOM_LEFT" layoutX="20" layoutY="350" prefHeight="400" styleClass="buttonPanel">
+        <Label text="Please, type in a nickname\n to start a new game:" wrapText="true" prefWidth="116.0"/>
+        <TextField fx:id="Username" prefHeight="25.0" prefWidth="116.0" promptText="Username" />
         <Button fx:id="newGameButton" onAction="#newGame" prefHeight="50" prefWidth="120" text="New Game" />
-        <Button prefHeight="50" prefWidth="120" text="Controls" />
         <Button prefHeight="50" prefWidth="120" text="Scoreboard" />
         <Button fx:id="exitButton" onAction="#onExitButton" prefHeight="50" prefWidth="120" text="Exit" />
     </VBox>
+    <ToggleButton fx:id="pauseButton" layoutX="145" layoutY="581" onAction="#pauseGame" prefWidth="70" text="Pause" />
     <VBox layoutX="250">
-        <BorderPane styleClass="nextShape" maxWidth="150" prefWidth="100" prefHeight="100">
+        <BorderPane maxWidth="150" prefHeight="100" prefWidth="100" styleClass="nextShape">
             <center>
-                <GridPane fx:id="nextShapePane" hgap="1" vgap="1"  />
+                <GridPane fx:id="nextShapePane" alignment="CENTER" hgap="1" vgap="1" />
             </center>
         </BorderPane>
     </VBox>
     <VBox layoutX="250" layoutY="100">
         <Label text="Score: " />
-        <Text text=" " fx:id="scoreValue"/>
+        <Text fx:id="scoreValue" text=" " />
     </VBox>
-    <stylesheets >
+    <VBox layoutX="250.0" layoutY="569.0" styleClass="controls">
+        <Label text="Controls: " />
+        <Label text="Rotate the shape - UP arrow" />
+        <Label text="Move the shape right - RIGHT arrow" />
+        <Label text="Move the shape left - LEFT arrow" />
+        <Label text="Move the shape down - DOWN arrow" />
+        <Label text="Pause the game - P" />
+    </VBox>
+    <Label fx:id="gameoverLabel" layoutX="300" layoutY="300" styleClass="gameover" text="GAME OVER" />
+    <stylesheets>
         <URL value="@game_style.css" />
     </stylesheets>
 </Pane>

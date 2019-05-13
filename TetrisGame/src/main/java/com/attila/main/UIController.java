@@ -7,13 +7,21 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -21,9 +29,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +45,9 @@ public class UIController implements Initializable {
 
     @FXML
     private TextField Username;
+
+    @FXML
+    private Label gameoverLabel;
 
     @FXML
     private Button newGameButton;
@@ -56,14 +71,18 @@ public class UIController implements Initializable {
 
     private Timeline timeline;
 
+    private final BooleanProperty isGameOver = new SimpleBooleanProperty();
+    private final BooleanProperty isPause = new SimpleBooleanProperty(true);
+
     /**
      * A tábla téglalapja
      */
     private Rectangle[][] displayRectangle;
     private Rectangle[][] shapeRectangle;
-    private User user;
-    public UIController() throws IOException {
-    }
+
+    private String textfieldContent;
+    @FXML
+    private ToggleButton pauseButton;
 
     @FXML
     private void onExitButton(){
@@ -73,11 +92,14 @@ public class UIController implements Initializable {
 
     @FXML
     private void newGame(ActionEvent event) {
+        setTextfieldContent(Username);
         Username.clear();
         timeline.stop();
         inputEvents.createNewGame();
         gamePanel.requestFocus();
         timeline.play();
+        isPause.setValue(false);
+        isGameOver.setValue(false);
     }
 
     /**
@@ -96,24 +118,47 @@ public class UIController implements Initializable {
         gamePanel.setFocusTraversable(true);
         //Requests that this Node get the input focus
         gamePanel.requestFocus();
-        gamePanel.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.LEFT){
-                refreshShape(inputEvents.leftEvent(new MoveEvent(EventSource.USER,EventType.LEFT)));
-                keyEvent.consume();
-            }
-            if (keyEvent.getCode() == KeyCode.RIGHT){
-                refreshShape(inputEvents.rightEvent(new MoveEvent(EventSource.USER,EventType.RIGHT)));
-                keyEvent.consume();
-            }
-            if (keyEvent.getCode() == KeyCode.DOWN){
-                onMoveDown(new MoveEvent(EventSource.USER,EventType.DOWN));
-                keyEvent.consume();
-            }
-            if (keyEvent.getCode() == KeyCode.UP){
-                refreshShape(inputEvents.rotationEvent(new MoveEvent(EventSource.USER,EventType.ROTATE)));
-                keyEvent.consume();
+        gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (isGameOver.getValue() == false && isPause.getValue() == false) {
+                    if (keyEvent.getCode() == KeyCode.LEFT) {
+                        UIController.this.refreshShape(inputEvents.leftEvent(new MoveEvent(EventSource.USER, EventType.LEFT)));
+                        keyEvent.consume();
+                    }
+                    if (keyEvent.getCode() == KeyCode.RIGHT) {
+                        UIController.this.refreshShape(inputEvents.rightEvent(new MoveEvent(EventSource.USER, EventType.RIGHT)));
+                        keyEvent.consume();
+                    }
+                    if (keyEvent.getCode() == KeyCode.DOWN) {
+                        UIController.this.onMoveDown(new MoveEvent(EventSource.USER, EventType.DOWN));
+                        keyEvent.consume();
+                    }
+                    if (keyEvent.getCode() == KeyCode.UP) {
+                        UIController.this.refreshShape(inputEvents.rotationEvent(new MoveEvent(EventSource.USER, EventType.ROTATE)));
+                        keyEvent.consume();
+                    }
+                    if (keyEvent.getCode() == KeyCode.P) {
+                        pauseButton.selectedProperty().setValue(!pauseButton.selectedProperty().getValue());
+                    }
+                }
             }
         });
+        pauseButton.selectedProperty().bindBidirectional(isPause);
+        pauseButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    timeline.pause();
+                    pauseButton.setText("Resume");
+                } else {
+                    timeline.play();
+                    pauseButton.setText("Pause");
+                }
+            }
+        });
+        gameoverLabel.setVisible(false);
+        
     }
 
     /**
@@ -209,7 +254,7 @@ public class UIController implements Initializable {
      */
     private void refreshShape(ShapeData shapeData) {
         shapePanel.setLayoutX(gamePanel.getLayoutX() + shapeData.getXpos() * shapePanel.getVgap() + shapeData.getXpos() * 20);
-        shapePanel.setLayoutY(-60 + gamePanel.getLayoutY() + shapeData.getYpos() * shapePanel.getHgap() + shapeData.getYpos() * 20);
+        shapePanel.setLayoutY(-65 + gamePanel.getLayoutY() + shapeData.getYpos() * shapePanel.getHgap() + shapeData.getYpos() * 20);
         for (int i = 0; i < shapeData.getShapeData().length; i++) {
             for (int j = 0; j < shapeData.getShapeData()[i].length; j++) {
                 setRectangle( shapeRectangle[i][j], shapeData.getShapeData()[i][j]);
@@ -245,35 +290,33 @@ public class UIController implements Initializable {
 
     public void gameOver(Score score){
         timeline.stop();
-        try {
-            saveUser(score);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gameoverLabel.setVisible(true);
+        isGameOver.setValue(true);
+        saveUser(score);
 
     }
-    public void saveUser(Score score) throws IOException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("Username: ",Username.getText());
-        jsonObject.put("Score: ", score.getPropertyOfScore().getValue());
+    public void saveUser(Score score) {
+        File file = new File("users.json");
+        JSONParser parser = new JSONParser();
 
         try {
-            File file = new File("users.json");
+            Object object = parser.parse(new FileReader(file));
+            JSONArray jsonArray = (JSONArray) object;
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Username",textfieldContent);
+            jsonObject.put("Score", score.getPropertyOfScore().getValue());
+
+            jsonArray.add(jsonObject);
             FileWriter writer = new FileWriter(file);
-            writer.write(jsonObject.toJSONString());
+            writer.write(jsonArray.toJSONString());
             writer.flush();
             writer.close();
-        } catch (IOException e){
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-        /*
-        Writer writer = new FileWriter("Users.json");
-        Gson gson = new Gson();
-        user = new User(getUsername(), score.getPropertyOfScore().getValue());
-        System.out.println(user.getName() + user.getScore());
-        gson.toJson(user,writer);
-        */
     }
+
 
     public void bindScore(IntegerProperty integerProperty){
         scoreValue.textProperty().bind(integerProperty.asString());
@@ -283,11 +326,11 @@ public class UIController implements Initializable {
         this.inputEvents = events;
     }
 
-    public String getUsername() {
-        return Username.getText();
+    public void setTextfieldContent(TextField username) {
+        textfieldContent = username.getText();
     }
 
-    public void setUsername(TextField username) {
-        Username = username;
+    public void pauseGame(ActionEvent actionEvent) {
+        gamePanel.requestFocus();
     }
 }
