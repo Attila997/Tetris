@@ -6,18 +6,46 @@ import com.attila.logic.shapes.ShapeGenerator;
 import java.awt.*;
 
 /**
- *
+ * Generate the board.
  */
 public class BoardGenerator implements Board{
-
+    /**
+     * Height of the board.
+     */
     private final int boardHeight;
+
+    /**
+     * Width of the board.
+     */
     private final int boardWidth;
+
+    /**
+     * Shape generator.
+     */
     private final ShapeGenerator shapeGenerator;
+
+    /**
+     * The game board.
+     */
     private int[][] gameBoard;
+    /**
+     * Offset for the shapes.
+     */
     private Point offset;
+    /**
+     * The rotator.
+     */
     private Rotator rotator;
+    /**
+     * Score.
+     */
     private final Score score;
 
+    /**
+     * Generate the board.
+     * @param boardHeight Height of the board.
+     * @param boardWidth Width of the board.
+     */
     public BoardGenerator(int boardHeight, int boardWidth) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
@@ -27,6 +55,9 @@ public class BoardGenerator implements Board{
         score = new Score();
     }
 
+    /**
+     * Prepare the game.
+     */
     @Override
     public void newGame() {
         gameBoard = new int[boardHeight][boardWidth];
@@ -43,11 +74,14 @@ public class BoardGenerator implements Board{
     public boolean createNewShape() {
         Shape shape = shapeGenerator.getShape();
         rotator.setShape(shape);
-        //eltolás
         offset = new Point(3,0);
         return MatrixMath.intersect(gameBoard, rotator.getCurrentShape(),(int) offset.getX(),(int) offset.getY());
     }
 
+    /**
+     * Move a shape left.
+     * @return true, if the shape not able to move left, else if it can.
+     */
     @Override
     public boolean moveShapeLeft() {
         int[][] currentBoard = MatrixMath.copy(gameBoard);
@@ -62,6 +96,10 @@ public class BoardGenerator implements Board{
         }
     }
 
+    /**
+     * Move a shape right.
+     * @return true, if the shape not able to move right, else if it can.
+     */
     @Override
     public boolean moveShapeRight() {
         int[][] currentBoard = MatrixMath.copy(gameBoard);
@@ -76,6 +114,10 @@ public class BoardGenerator implements Board{
         }
     }
 
+    /**
+     * Move a shape down.
+     * @return true, if the shape not able to move down, else if it can.
+     */
     @Override
     public boolean moveShapeDown() {
         int[][] currentBoard = MatrixMath.copy(gameBoard);
@@ -90,6 +132,10 @@ public class BoardGenerator implements Board{
         }
     }
 
+    /**
+     * Rotate the shape.
+     * @return true, if the shape not able to be rotated, else if it can be.
+     */
     @Override
     public boolean rotateShapeLeft() {
         int[][] currentBoard = MatrixMath.copy(gameBoard);
@@ -103,11 +149,19 @@ public class BoardGenerator implements Board{
         }
     }
 
+    /**
+     *
+     * @return {@link ShapeData}.
+     */
     @Override
     public ShapeData getShapeData() {
         return new ShapeData((int) offset.getX(), (int) offset.getY(), rotator.getCurrentShape(), shapeGenerator.getNextShape().getShape().get(0));
     }
 
+    /**
+     *
+     * @return the Matrix of the gamaboard.
+     */
     @Override
     public int[][] getGameBoard() {
         return gameBoard;
@@ -118,6 +172,10 @@ public class BoardGenerator implements Board{
         gameBoard = MatrixMath.push(rotator.getCurrentShape(), gameBoard, (int) offset.getX(), (int) offset.getY());
     }
 
+    /**
+     * Check the fulled lines and set the gameboard to the updated gameboard.
+     * @return {@link LineClear}
+     */
     @Override
     public LineClear lineClear() {
         LineClear lineClear = MatrixMath.checkRemove(gameBoard);
@@ -125,6 +183,10 @@ public class BoardGenerator implements Board{
         return lineClear;
     }
 
+    /**
+     * Return the score.
+     * @return {@link Score}
+     */
     @Override
     public Score getScore() {
         return score;

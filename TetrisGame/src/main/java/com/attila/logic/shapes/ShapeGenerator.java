@@ -8,14 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ShapeGenerator {
 
-    /**
-     * a formák listája
-     */
     private final List<Shape> shapeList;
-
-    /**
-     * Több a következő formáknak
-     */
     private final Deque<Shape> nextShape = new ArrayDeque<>();
 
     public ShapeGenerator() {
@@ -31,8 +24,8 @@ public class ShapeGenerator {
     }
 
     /**
-     * Kiveszi a nextShape tömbből a legfelső elemet majd törli
-     * @return
+     * Get the top shape from the {@code nextShape} deque.
+     * @return {@link Shape}
      */
     public Shape getShape(){
         if (nextShape.size() <= 1){
@@ -42,8 +35,8 @@ public class ShapeGenerator {
     }
 
     /**
-     *
-     * @return vissza adja a következő formát
+     * Get the next shape.
+     * @return {@link Shape}
      */
     public Shape getNextShape(){
         return nextShape.peek();

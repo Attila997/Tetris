@@ -33,6 +33,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,6 +44,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class UIController implements Initializable {
+
+    private Logger logger = LoggerFactory.getLogger(UIController.class);
 
     @FXML
     private TextField Username;
@@ -88,6 +92,7 @@ public class UIController implements Initializable {
     private void onExitButton(){
         Stage stage = (Stage) exitButton.getScene().getWindow();
         stage.close();
+        logger.info("A program bezárult");
     }
 
     @FXML
@@ -100,6 +105,7 @@ public class UIController implements Initializable {
         timeline.play();
         isPause.setValue(false);
         isGameOver.setValue(false);
+        logger.info("Új játék vette kezdetét");
     }
 
     /**
@@ -293,6 +299,7 @@ public class UIController implements Initializable {
         gameoverLabel.setVisible(true);
         isGameOver.setValue(true);
         saveUser(score);
+        logger.info("GAME OVER");
 
     }
     public void saveUser(Score score) {
@@ -312,8 +319,10 @@ public class UIController implements Initializable {
             writer.write(jsonArray.toJSONString());
             writer.flush();
             writer.close();
+            logger.info("Felhasználó sikeresen elmentve");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+            logger.error("Nem sikerült beolvasni az adatbázist");
         }
     }
 

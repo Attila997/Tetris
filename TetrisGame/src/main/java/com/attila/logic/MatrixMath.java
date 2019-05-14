@@ -6,15 +6,18 @@ import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Matrix operations.
+ */
 public class MatrixMath {
 
     /**
      * A Board mátrixának és a shape mátrixának a metszéspontját számolja ki, annak érdekében hogy
-     * tudja mikor nem mehet már lejjebb a shape
+     * tudja mikor nem mehet már lejjebb a shape.
      * @param matrix a tábla mártixa
      * @param shape forma
-     * @param x
-     * @param y
+     * @param x koordinata
+     * @param y koordinata
      * @return igazat ha még még mehet tovább a forma, hamisat ha megkell álljon
      */
     public static boolean intersect(final int[][] matrix, final int[][] shape,int x, int y){
@@ -32,10 +35,10 @@ public class MatrixMath {
 
     /**
      * AZt vizsgálja hogy a cél koordináta ahova a forma mozogni fog belül van-e
-     * a tábla szélén
-     * @param matrix
-     * @param targetX
-     * @param targetY
+     * a tábla szélén.
+     * @param matrix a tábla mátrixa
+     * @param targetX a cél x koordinátája
+     * @param targetY a cél y koordinátája
      * @return igazat ha igen, hamisat ha nem
      */
     private static boolean outOfBorder(int[][] matrix,int targetX, int targetY){
@@ -46,6 +49,11 @@ public class MatrixMath {
         return value;
     }
 
+    /**
+     * Matrix copy.
+     * @param matrix The matrix you want to copy.
+     * @return the copied matrix.
+     */
     public static int[][] copy(int[][] matrix){
         int [][] myInt = new int[matrix.length][];
         for(int i = 0; i < matrix.length; i++)
@@ -58,6 +66,14 @@ public class MatrixMath {
         return myInt;
     }
 
+    /**
+     * merge the shape into the board.
+     * @param shape the shape for the push
+     * @param filledField the filled grids
+     * @param x coordinate
+     * @param y coordinate
+     * @return the new matrix of the board
+     */
     public static int[][] push(int[][] shape, int[][] filledField, int x, int y){
         int[][] copy = copy(filledField);
         for (int i = 0; i < shape.length; i++) {
@@ -73,9 +89,11 @@ public class MatrixMath {
     }
 
     /**
-     * Megnézi hogy valamely sor törlendő-e
+     * Megnézi hogy valamely sor törlendő-e.
+     * @param board a jelenleg mátrixa a táblának
      * @return visszad a törölt sorok számát, az uj Tábla mátrixát
      */
+
     public static LineClear checkRemove(final int[][] board){
         int[][] currentBoard = new int[board.length][board[0].length];
         Deque<int[]> newRows = new ArrayDeque<>();
@@ -109,6 +127,11 @@ public class MatrixMath {
         return new LineClear(clearedRows.size(),currentBoard,score);
     }
 
+    /**
+     * Copy a list into another.
+     * @param list is te list yoou want to copy
+     * @return the copied list
+     */
     public static List<int[][]> copyToList(List<int[][]> list){
         return list.stream().map(MatrixMath::copy).collect(Collectors.toList());
     }

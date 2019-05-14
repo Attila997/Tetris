@@ -3,6 +3,9 @@ package com.attila.logic;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+/**
+ * Score of the game.
+ */
 public class Score {
 
     private final IntegerProperty score = new SimpleIntegerProperty(0);

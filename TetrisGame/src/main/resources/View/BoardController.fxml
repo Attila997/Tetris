@@ -19,7 +19,7 @@
         </center>
     </BorderPane>
     <VBox alignment="BOTTOM_LEFT" layoutX="20" layoutY="350" prefHeight="400" styleClass="buttonPanel">
-        <Label text="Please, type in a nickname\n to start a new game:" wrapText="true" prefWidth="116.0"/>
+        <Label text="Please, type in a nickname to start a new game:" wrapText="true" prefWidth="116.0"/>
         <TextField fx:id="Username" prefHeight="25.0" prefWidth="116.0" promptText="Username" />
         <Button fx:id="newGameButton" onAction="#newGame" prefHeight="50" prefWidth="120" text="New Game" />
         <Button prefHeight="50" prefWidth="120" text="Scoreboard" />
