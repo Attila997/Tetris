@@ -303,7 +303,7 @@ public class UIController implements Initializable {
 
     }
     public void saveUser(Score score) {
-        File file = new File("users.json");
+        File file = new File("src/main/resources/users.json");
         JSONParser parser = new JSONParser();
 
         try {

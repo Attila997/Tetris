@@ -22,7 +22,6 @@
         <Label text="Please, type in a nickname to start a new game:" wrapText="true" prefWidth="116.0"/>
         <TextField fx:id="Username" prefHeight="25.0" prefWidth="116.0" promptText="Username" />
         <Button fx:id="newGameButton" onAction="#newGame" prefHeight="50" prefWidth="120" text="New Game" />
-        <Button prefHeight="50" prefWidth="120" text="Scoreboard" />
         <Button fx:id="exitButton" onAction="#onExitButton" prefHeight="50" prefWidth="120" text="Exit" />
     </VBox>
     <ToggleButton fx:id="pauseButton" layoutX="145" layoutY="581" onAction="#pauseGame" prefWidth="70" text="Pause" />
